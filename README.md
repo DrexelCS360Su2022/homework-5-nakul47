@@ -12,6 +12,6 @@ Please let us know how much time you spent on each problem. You may enter time u
 
 Problem 1:  2h
 
-Problem 2:  1h
+Problem 2:  1h15m
 
-Problem 3:  
+Problem 3:  2h
