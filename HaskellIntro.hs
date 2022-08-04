@@ -1,8 +1,10 @@
 {-# OPTIONS_GHC -fwarn-tabs #-}
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 
 module HaskellIntro where
 
 import Set
+import System.Win32 (COORD(x), fILE_ADD_FILE)
 
 -- Load this file into GHCi (say, with `ghci HaskellIntro.hs`) and type
 -- `isThisWorking` at the prompt. GHCi will tell you whether it's working!
@@ -15,41 +17,79 @@ isThisWorking = "Yes"
 --
 
 lastDigit :: Integer -> Integer
-lastDigit = error "lastDigit not yet defined"
+lastDigit num
+    | (num < 10) = num
+    | otherwise = num `rem` 10
+
 
 dropLastDigit :: Integer -> Integer
-dropLastDigit = error "dropLastDigit not yet defined"
+dropLastDigit num
+    | (num < 10) = 0
+    | otherwise = div num 10
+
+append :: Integer -> [Integer] -> [Integer]
+append a [] = [a]
+append a (x:xs) = x : append a xs
 
 toDigits :: Integer -> [Integer]
-toDigits = error "toDigits not yet defined"
+toDigits num
+    | (num == 0) = reverse ([])
+    | (num < 0) = []
+    | otherwise = toDigits (num `div` 10) ++ [lastDigit num]
+
+reverseEveryOther :: [Integer] -> [Integer]
+reverseEveryOther [] = []
+reverseEveryOther (x:y:xs) = x : (y*2) : reverseEveryOther xs
+reverseEveryOther (x:xs) = (x*2): reverseEveryOther xs
+
 
 doubleEveryOther :: [Integer] -> [Integer]
-doubleEveryOther = error "doubleEveryOther not yet defined"
+doubleEveryOther [] = []
+doubleEveryOther(x:xs) = reverse (reverseEveryOther (reverse (x:xs)))
+
 
 sumDigits :: [Integer] -> Integer
-sumDigits = error "sumDigits not yet defined"
+sumDigits [] = 0
+sumDigits (x:xs) = sum (toDigits x) + sumDigits xs
 
 validate :: Integer -> Bool
-validate = error "validate not yet defined"
+validate x = val (lastDigit (sumDigits (doubleEveryOther (toDigits x))))
+    where
+        val :: Integer -> Bool
+        val x
+            |x == 0 = True
+            |otherwise = False
 
 --
 -- Problem 2
 --
+square x = x*x
 
 pow :: (a -> a) -> Int -> a -> a
-pow = error "pow not yet defined"
+pow f 0 = f
+pow f 1 = f
+pow f n = f . pow f (n - 1)
+
 
 g :: Integer -> Integer
-g = error "g not yet defined"
+g 0 = 0
+g n = pow n - ((g . g) n - 1)
 
 h :: Integer -> Integer
-h = error "h not yet defined"
+h 0 = 0
+h n = pow n - ((h . h . h) n - 1)
+    --n - ((h . h . h) n - 1)
 
 d :: Int -> Integer -> Integer
-d = error "d not yet defined"
+d 0 = 0
+d i = pow n - (d(n-1)) i
 
 --
 -- Problem 3
 --
 
-powerSet = error "powerSet not yet defined"
+powerSet :: Int => Set a -> Set (Set a)
+powerSet x 
+    |isEmpty x = empty
+    |(size x = 1) = singleton x
+    
